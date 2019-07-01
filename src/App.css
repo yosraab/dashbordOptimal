@@ -1,0 +1,298 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  background: url('./images/securekey-bg.png') center;
+  background-size: cover;
+  user-select: none; /* Non-prefixed version, currently not supported by any browser */
+}
+
+* {
+  font-family: Roboto, Cairo, 'Icons20', sans-serif !important;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  display: block;
+  visibility: initial !important;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(50, 50, 50, 0.15);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  box-shadow: rgba(16, 22, 26, .15) 0 0 0 1px,
+  rgba(16, 22, 26, 0) 0 0 0,
+  rgba(16, 22, 26, 0) 0 0 0;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgba(75, 75, 75, .1);
+}
+
+i {
+  font-style: normal;
+  font-weight: 300;
+}
+
+/* ___ Drawer Style ___ */
+
+.drawer-header-menu {
+  height: 125px;
+  width: 250px;
+  background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 1) 100%
+  ),
+  url('./images/drawer-bg.jpg') repeat;
+}
+
+.drawer-header-menu .drawer-logo-img {
+  position: absolute;
+  left: 15px;
+  top: 30px;
+  width: 75px;
+  height: auto;
+}
+
+.drawer-header-menu p {
+  position: absolute;
+  right: 15px;
+  top: 60px;
+  width: 100px;
+  color: #555;
+  text-align: right;
+}
+
+.drawer-header-menu p span {
+  font-weight: lighter;
+}
+
+.optimal-logo-img {
+  transition: 0.5s;
+  cursor: pointer;
+  position: absolute;
+  width: 125px;
+  left: 15px;
+  bottom: 15px;
+  height: auto;
+  opacity: 0.5;
+}
+
+.optimal-logo-img:hover {
+  transition: 0.5s;
+  opacity: 1;
+}
+
+.search-input {
+  display: none;
+}
+
+.collapsed-element {
+  background-color: #f5f5f5;
+  border-left: #26809c 5px solid;
+}
+
+div.collapsed-element > a > div > div > span {
+  font-size: 14px !important;
+}
+
+/* MUI CSS overriding */
+
+.collapsed-menu {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* modal style */
+.mui-modal {
+  background-color: #fff;
+  width: 60vw;
+  height: auto;
+  margin-top: 10vh;
+  margin-left: auto;
+  margin-right: auto;
+  outline: none;
+  border-radius: 8px;
+  box-shadow: 0 11px 15px -7px rgba(0, 0, 0, .2), 0 24px 38px 3px rgba(0, 0, 0, .14), 0 9px 46px 8px rgba(0, 0, 0, .12);
+}
+
+.mui-modal-sm {
+  width: 30vw;
+  max-width: 500px;
+}
+
+.mui-modal-md {
+  width: 60vw;
+  max-width: 750px;
+}
+
+.mui-modal-lg {
+  width: 90vw;
+  max-width: 1000px;
+}
+
+.mui-modal-header {
+  padding: 10px 15px;
+  margin: 0;
+  max-height: 60px;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+}
+
+.mui-modal-header-tabs {
+  padding: 0;
+  margin: 0;
+  max-height: 60px;
+}
+
+.mui-modal-info .mui-modal-header-tabs {
+  background-color: rgba(33, 150, 243, 0.75);
+  color: #fff;
+}
+
+.mui-modal-success .mui-modal-header-tabs {
+  background-color: rgba(0, 150, 136, 0.75);
+  color: #fff;
+}
+
+.mui-modal-warning .mui-modal-header-tabs {
+  background-color: rgba(255, 193, 7, 0.75);
+  color: #fff;
+}
+
+.mui-modal-danger .mui-modal-header-tabs {
+  background-color: #e91e63;
+  color: #fff;
+}
+
+span[class*="MuiPrivateTabIndicator"] {
+  background-color: white;
+  height: 3px;
+}
+
+div[class*="MuiTablePagination-select"] {
+  padding-right: 15px;
+}
+
+.mui-modal-header > h6 {
+  font-weight: bolder;
+}
+
+.mui-modal-info .mui-modal-header {
+  background-color: #2196f3;
+  color: #fff;
+}
+
+.mui-modal-success .mui-modal-header {
+  background-color: #009688;
+  color: #fff;
+}
+
+.mui-modal-warning .mui-modal-header {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.mui-modal-danger .mui-modal-header {
+  background-color: #e91e63;
+  color: #fff;
+}
+
+.mui-modal-body {
+  padding: 20px;
+  text-align: left;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.mui-modal-no-padding {
+  padding: 0;
+  text-align: left;
+  max-height: 55vh;
+  overflow: auto;
+}
+
+.mui-modal-body:not(:first-child) {
+  border-top: darkgray solid 1px;
+}
+
+.mui-modal-footer {
+  margin: 0;
+  padding: 15px;
+  background-color: #f2f2f2;
+  border-top: 1px solid rgba(195, 195, 195, 0.5);
+  text-align: right;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.mui-modal-footer > * {
+  margin: 0 5px !important;
+  display: inline-block;
+}
+
+/* Toast style */
+body > div[class^="css-"] {
+  z-index: 9999999;
+  bottom: -5px;
+  overflow: hidden;
+}
+
+/* Material UI table striped style */
+table[class*="MuiTable"] > thead > tr {
+  height: 40px;
+}
+
+table[class*="MuiTable"] tr:nth-child(odd) {
+  background: #fff
+}
+
+table[class*="MuiTable"] tr:nth-child(even) {
+  background: #f5f5f5
+}
+
+
