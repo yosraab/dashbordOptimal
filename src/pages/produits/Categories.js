@@ -7,10 +7,6 @@ import Visibility from '@material-ui/icons/Visibility';
 import NoIdealState from '../../components/Commun/NoIdealState';
 import EnhancedTableHead from '../../components/Commun/EnhancedTableHead';
 import { fetchCategories } from '../../actions/produits';
-import AddCateg from './AddCateg';
-import DeleteApp from './DeleteProd';
-import UpdateApp from './UpdateProd';
-
 
 const columnData = [
   { id: 'name', label: 'categoryName' },
@@ -66,10 +62,6 @@ class Categories extends Component {
             <Typography variant="h6" style={{ padding: '20px 0 0 20px' }}>
               Categories of {params.categName}
             </Typography>
-          
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'row', marginRight: 20, placeItems: 'baseline' }}>
-            <AddCateg refresh={this.refreshData} />
           </div>
         </div>
         <div style={{ margin: '10px 10px 0 10px' }}>

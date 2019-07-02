@@ -1,8 +1,8 @@
 {
-  "name": "optimal-securekey-dashboard",
-  "productName": "Optimal secureKey Dashboard",
+  "name": "optimal-dashboard",
+  "productName": "Optimal Dashboard",
   "version": "0.0.7-alpha",
-  "description": "Dashboard for Remote Key management system (KMS).",
+  "description": "Dashboard for site web optimal solution.",
   "author": {
     "name": "Optimal Solution ltd",
     "email": "contact@optimal.com.tn",
@@ -12,10 +12,10 @@
   "license": "private",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/optimal-solution/optimal-securekey/optimal-securekey-dashboard.git"
+    "url": "https://github.com/yosraab/dashbordOptimal.git"
   },
   "bugs": {
-    "url": "https://gitlab.com/optimal-solution/optimal-securekey/optimal-securekey-dashboard/issues"
+    "url": "https://github.com/yosraab/dashbordOptimal.git"
   },
   "private": true,
   "dependencies": {

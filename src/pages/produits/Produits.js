@@ -36,6 +36,8 @@ class Produits extends Component {
   async componentDidMount() {
 
     const { match: { params } } = this.props;
+
+    
     await this.props.fetchProduits(this.props.token, params.productName);
     this.setState({
       data: this.props.produits,
@@ -73,7 +75,7 @@ class Produits extends Component {
             </Typography>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', marginRight: 20, placeItems: 'baseline' }}>
-            <AddProduit refresh={this.refreshData} />
+            <AddProduit refresh={this.refreshData} categName={this.props.match.params.productName} />
           </div>
         </div>
         <div style={{ margin: '10px 10px 0 10px' }}>

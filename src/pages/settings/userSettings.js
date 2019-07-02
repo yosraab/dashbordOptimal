@@ -30,7 +30,7 @@ class UserSettings extends Component {
   }
 
   async componentWillMount() {
-    await this.props.fetchAllUsers(this.props.token);
+    await this.props.fetchAllUsers(this.props.token, this.props.refreshToken);
     this.setState({ data: this.props.listusers });
   }
 
@@ -39,7 +39,7 @@ class UserSettings extends Component {
   }
 
   refreshData = async () => {
-    await this.props.fetchAllUsers(this.props.token);
+    await this.props.fetchAllUsers(this.props.token, this.props.refreshToken);
     this.setState({ data: this.props.listusers });
   };
 
@@ -115,6 +115,7 @@ class UserSettings extends Component {
 const mapStateToProps = store => ({
   listusers: store.users,
   token: store.auth.token,
+  refreshToken: store.auth.refreshToken
 });
 const mapDispatchToProps = { fetchAllUsers };
 

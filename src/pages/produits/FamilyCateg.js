@@ -7,9 +7,6 @@ import Visibility from '@material-ui/icons/Visibility';
 import NoIdealState from '../../components/Commun/NoIdealState';
 import EnhancedTableHead from '../../components/Commun/EnhancedTableHead';
 import { fetchCategFamily } from '../../actions/produits';
-import AddFamily from './AddFamily';
-import DeleteCategFamily from './DeleteProd';
-import UpdateCategFamily from './UpdateProd';
 
 
 const columnData = [
@@ -62,10 +59,6 @@ class FamilyCateg extends Component {
             <Typography variant="h6" style={{ padding: '20px 0 0 20px' }}>
               Family List
             </Typography>
-        
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'row', marginRight: 20, placeItems: 'baseline' }}>
-            <AddFamily refresh={this.refreshData} />
           </div>
         </div>
         <div style={{ margin: '10px 10px 0 10px' }}>

@@ -95,40 +95,50 @@ export const createProduct = (data, callback, callbackFailure) => (dispatch, get
   const {
     auth: { token },
   } = getState();
+  console.lgo('data', data)
   return axios({
-    url: `${remoteAPI}/application`,
+    url: `${remoteAPI}`,
     method: 'post',
-    headers: {
-      Authorization: token,
-      'Content-Type': 'application/json',
-    },
-    data :
-    { query: `
-    mutation PostContact($contactInput:ContactInput!) {
-        postContact(data:$contactInput) 
+    data : JSON.stringify({
+      query: `
+      mutation AddProduct($data:Product!) {
+        addProduct(data:$data ) {
+         _id
+          name
+        description
+        categoryName
+        categorySlug
+        categoryFamily
+        relation
+        manufacturer
+        feature{
+          color
+          itemCondition
+          logo
+          offers
+          stock
+          audience
+          brand
+        }
+        }
       }
     `,
-    variables:
-    {"contactInput":{
-        "fullName":this.state.fullname,
-         "email":this.state.email,
-        "phone":this.state.phone,
-        "message":this.state.message
+    variables: { 
+      "data":data
       }
-      }} 
+    })
+  
   })
     .then(response => {
-      if (response.status === 201) {
+     console.log(response)
         dispatch({ type: 'CREATE_PRODUCT_SUCCESS', payload: response.data });
         callback(response.data);
-      } else {
-        callbackFailure();
-      }
+     
     })
     .catch(error => {
       callbackFailure();
       dispatch({ type: 'CREATE_PRODUCT_FAILURE', payload: error });
-    });
+    })
 };
 
 export const deleteApplication = appId => async (dispatch, getState) => {

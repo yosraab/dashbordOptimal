@@ -31,20 +31,31 @@ const fetch = createApolloFetch({
 });
 
 
-export const fetchAllUsers = token => dispatch => {
+export const fetchAllUsers = (token, refreshToken) => dispatch => {
   dispatch({ type: FETCH_USERS_REQUEST });
-  return fetch({
-    query: ` query {
-      getAllUsers{
-        _id
-        firstName
-        lastName
-        email
-      }
+  return  axios('http://localhost:5000/graphql', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        'x-token': token,
+        'x-refresh-token': refreshToken
+      },
+        data: JSON.stringify({
+          query: ` query {
+            getAllUsers{
+              _id
+              firstName
+              lastName
+              email
+            }
+      
+          }
+          `
+        })
 
-    }
-    `
-  }).then(response => {
+      })
+  
+  .then(response => {
 
     console.log(response)
     dispatch({ type: FETCH_USERS_SUCCESS, payload: response.data.getAllUsers });
