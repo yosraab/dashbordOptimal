@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { Typography, Modal, Button,  Tabs, Tab, Avatar } from '@material-ui/core/';
+import { Typography,FormControl,FormLabel,Select, MenuItem, Modal, Button,  Tabs, Tab, Avatar } from '@material-ui/core/';
 import { CheckCircleTwoTone, AddCircleTwoTone } from '@material-ui/icons/';
 import ChipInput from 'material-ui-chip-input';
 import { withToastManager } from 'react-toast-notifications/';
@@ -20,7 +20,7 @@ class AddProduit extends Component {
       features: [],
       listImages:[],
       value :0,
-      stock:'',
+      stock:'in stock',
       logo: '',
       itemCondition:'',
       audience:'',
@@ -38,20 +38,22 @@ class AddProduit extends Component {
       itemCondition: this.state.itemCondition,
       stock: this.state.stock,
       audience: this.state.audience,
+      brand:'optimal'
     };
 
     const manufacturer = {
-      nameMan:this.state. nameManu,
-      logoMan:this.state.logoMan
+      nameMan:this.state.nameMan,
+      logoMan:this.state.logoManu
      };
 
     const data = {
       name: this.state.name,
-      categoryName:'',
-      categoryFamily:'',
+      categoryName:this.props.categName,
+      categoryFamily:this.props.familyName,
+      description:this.state.description,
 
       image: this.state.listImages,
-      features: features,
+      feature: features,
       manufacturer:manufacturer,
     };
 
@@ -75,6 +77,12 @@ class AddProduit extends Component {
   handleChange = event => {
     this.setState({
       [event.target.name]: event.target.value,
+    });
+  };
+
+  handleChangeStock = event => {
+    this.setState({
+     stock: event.target.value,
     });
   };
 
@@ -114,6 +122,7 @@ class AddProduit extends Component {
     })
   
   };
+
   handleChangeLogo = event => {
     const form = new FormData();
     form.append('uploadedfile', event.target.files[0]);
@@ -241,15 +250,32 @@ class AddProduit extends Component {
             )}
                {this.state.value === 1 && (
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <TextField
-                      style={inputWidth}
-                      name="stock"
-                      value={this.state.stock}
-                      onChange={this.handleChange}
-                      type="text"
-                      required
-                      label="Stock"
-                    />
+                  
+
+
+<FormControl>
+                      <FormLabel>
+                       Stock
+                      </FormLabel>
+                      <Select
+                          value={this.state.stock}
+                          onChange={this.handleChangeStock}
+                          name="stock"
+                          style={inputWidth}
+                        >
+                          <MenuItem  value={'in stock'}>
+                          in stock
+                          </MenuItem>
+                            <MenuItem  value={'in arrival'}>
+                            in arrival
+                           </MenuItem>
+                            <MenuItem  value={'on command'}>
+                              <em>on command</em>
+                            </MenuItem>
+                        </Select>
+                     
+                    </FormControl>
+
                     <TextField
                       style={inputWidth}
                       name="itemCondition"

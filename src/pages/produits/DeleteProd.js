@@ -15,7 +15,7 @@ class DeleteProd extends Component {
   }
 
   handleDelete = async () => {
-    await this.props.deleteApplication(this.props.app._id);
+    await this.props.deleteApplication(this.props.product._id);
     this.handleClose();
     this.props.refresh();
   };
@@ -39,7 +39,7 @@ class DeleteProd extends Component {
           <DialogContent>
             <DialogContentText>
               Are you sure you want to delete ?{': '}
-              <strong>{`${this.props.app.name}`}</strong>?
+              <strong>{`${this.props.product.name}`}</strong>?
             </DialogContentText>
           </DialogContent>
           <DialogActions>

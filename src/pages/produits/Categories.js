@@ -76,7 +76,7 @@ class Categories extends Component {
                       <TableCell>{categ.categorySlug}</TableCell>
                       <TableCell style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', placeContent: 'flex-end' }}>
-                        <Link to={`/category/${categ.categorySlug}`}>
+                        <Link to={`/category/${params.categName}/${categ.categorySlug}`}>
                       <IconButton onClick={this.handleClickOpen}>
                             <Visibility />
                           </IconButton>

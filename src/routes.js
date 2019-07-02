@@ -21,7 +21,7 @@ class Routes extends Component {
                 <section style={styles.content}>
                     <Route exact path="/family" component={FamilyCateg} />
                     <Route path="/family/:categName" component={Categories} />
-                    <Route path="/category/:productName" component={Produits} />
+                    <Route path="/category/:categName/:productName" component={Produits} />
                     <Route path="/customers" component={Customers} />
                     <Route path="/candidatures" component={Candidatures} />
                     <Route path="/paniers" component={Paniers} />

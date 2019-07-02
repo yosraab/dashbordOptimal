@@ -63,14 +63,27 @@ export function fetchProduits(token, categorySlug) {
       query:
         ` query GetAllProductByCategoriesSlugs($categorySlug:String!){
        getAllProductsByCategoriesSlugs(categorySlug:$categorySlug){
-         name
-         slug
-         image
-         feature{
-             logo
-             color
-             }
-         description
+        description
+        name
+        _id
+        image
+        slug
+        categoryName
+        categorySlug
+        categoryFamily
+        manufacturer{
+          nameMan
+        logoMan
+        }
+        feature{
+          color
+          itemCondition
+          logo
+          offers
+          stock
+          audience
+          brand
+        }
      }
      }
      `,
@@ -95,37 +108,40 @@ export const createProduct = (data, callback, callbackFailure) => (dispatch, get
   const {
     auth: { token },
   } = getState();
-  console.lgo('data', data)
+  console.log('data', data)
   return axios({
     url: `${remoteAPI}`,
     method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     data : JSON.stringify({
       query: `
-      mutation AddProduct($data:Product!) {
+      mutation AddProduct($data:ProductInput!) {
         addProduct(data:$data ) {
          _id
           name
         description
         categoryName
-        categorySlug
         categoryFamily
-        relation
-        manufacturer
+        manufacturer{
+          nameMan
+        logoMan
+        }
         feature{
           color
           itemCondition
           logo
-          offers
           stock
           audience
           brand
         }
         }
       }
-    `,
-    variables: { 
-      "data":data
-      }
+
+    ` ,variables: {
+      data: data
+    }
     })
   
   })
@@ -163,13 +179,13 @@ export const deleteApplication = appId => async (dispatch, getState) => {
     });
 };
 
-export const updateApplication = (appId, data) => async (dispatch, getState) => {
+export const updateProduct = (productId, data) => async (dispatch, getState) => {
   const {
     auth: { token },
   } = getState();
 
   return axios
-    .put(`${remoteAPI}/application/${appId}`, data, {
+    .put(`${remoteAPI}`, data, {
       headers: {
         Authorization: token,
         'Content-Type': 'application/json',

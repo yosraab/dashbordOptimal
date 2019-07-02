@@ -9,7 +9,7 @@ import EnhancedTableHead from '../../components/Commun/EnhancedTableHead';
 import { fetchProduits } from '../../actions/produits';
 import AddProduit from './AddProduit';
 import DeleteApp from './DeleteProd';
-import UpdateApp from './UpdateProd';
+import UpdateProd from './UpdateProd';
 
 
 const columnData = [
@@ -75,7 +75,7 @@ class Produits extends Component {
             </Typography>
           </div>
           <div style={{ display: 'flex', flexDirection: 'row', marginRight: 20, placeItems: 'baseline' }}>
-            <AddProduit refresh={this.refreshData} categName={this.props.match.params.productName} />
+            <AddProduit refresh={this.refreshData} categName={this.props.match.params.productName}  familyName={this.props.match.params.categName}/>
           </div>
         </div>
         <div style={{ margin: '10px 10px 0 10px' }}>
@@ -96,8 +96,8 @@ class Produits extends Component {
                       <TableCell style={{ textAlign: 'right' }}>
                         <div style={{ display: 'flex', flexDirection: 'row', placeContent: 'flex-end' }}>
                      
-                          <UpdateApp app={prod} refresh={this.refreshData} />
-                          <DeleteApp app={prod} refresh={this.refreshData} />
+                          <UpdateProd product={prod} refresh={this.refreshData} />
+                          <DeleteApp product={prod} refresh={this.refreshData} />
                         </div>
                       </TableCell>
                     </TableRow>
