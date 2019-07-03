@@ -28,7 +28,7 @@ class Clients extends Component {
   }
 
   async componentDidMount() {
-    await this.props.fetchCustomers(this.props.token);
+    await this.props.fetchCustomers(this.props.token, this.props.refreshToken);
     this.setState({ data: this.props.customers });
   }
 
@@ -43,9 +43,9 @@ class Clients extends Component {
   
   refreshData = async () => {
   
-    this.setState({
-      data: this.props.customers,
-    });
+    
+    await this.props.fetchCustomers(this.props.token, this.props.refreshToken);
+    this.setState({ data: this.props.customers });
   };
 
   render() {
@@ -80,7 +80,7 @@ class Clients extends Component {
                      <TableCell>
                         <div style={{ display: 'flex', flexDirection: 'row', placeContent: 'flex-end' }}>
                           <UpdateClient client={client} refresh={this.refreshData} />
-                          <DeleteClient client={index} refresh={this.refreshData} />
+                          <DeleteClient client={client} refresh={this.refreshData} />
                         </div>
                       </TableCell>
                     </TableRow>
@@ -110,8 +110,8 @@ class Clients extends Component {
 }
 
 const mapStateToProps = store => ({
-  locale: store.locale,
   token: store.auth.token,
+  refreshToken: store.auth.refreshToken,
   customers: store.customers,
 });
 const mapDispatchToProps = { fetchCustomers };

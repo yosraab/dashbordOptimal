@@ -4,7 +4,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import Button from '@material-ui/core/Button';
 import Delete from '@material-ui/icons/DeleteTwoTone';
 import IconButton from '@material-ui/core/IconButton';
-import { deleteApplication } from '../../actions/produits';
+import { deleteProduct } from '../../actions/produits';
 
 class DeleteProd extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class DeleteProd extends Component {
   }
 
   handleDelete = async () => {
-    await this.props.deleteApplication(this.props.product._id);
+    await this.props.deleteProduct(this.props.product._id);
     this.handleClose();
     this.props.refresh();
   };
@@ -62,5 +62,5 @@ const mapStateToProps = store => ({
 
 export default connect(
   mapStateToProps,
-  { deleteApplication }
+  { deleteProduct }
 )(DeleteProd);

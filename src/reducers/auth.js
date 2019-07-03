@@ -48,7 +48,7 @@ function token(state = initialState.token, action) {
   }
 }
 
-function refreshToken(state = initialState.token, action) {
+function refreshToken(state = initialState.refreshToken, action) {
   switch (action.type) {
     case LOGIN_SUCCESS:
       return action.payload.refreshToken;

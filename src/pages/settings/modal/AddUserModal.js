@@ -24,32 +24,52 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import ListItemText from '@material-ui/core/ListItemText';
 import {
+  ArrowLeftTwoTone,
+  ArrowRightTwoTone,
+  DateRangeTwoTone,
+  AccessTimeTwoTone,
   DeleteTwoTone,
   WarningTwoTone,
   AddCircleTwoTone,
   VisibilityTwoTone,
   VisibilityOffTwoTone,
 } from '@material-ui/icons/';
-import { remoteAPI } from '../../../config';
-import DefaultPic from '../../../images/profil.png';
 import { addUser } from '../../../actions/users';
 
-class AddUserModal extends Component {
+type Props = {
+  refresh: () => *,
+  addUser: () => *,
+  toastManager: any,
+};
+
+class AddUserModal extends Component<Props, *> {
   constructor(props) {
     super(props);
     this.state = {
       rolesList: [
-        { name: 'superAdmin', value: 'superAdmin' },
-        { name: 'admin', value: 'admin' },
-        { name: 'analytic', value: 'analytic' },
+         { name: "super user", value: 'super user' },
+        { name:"user", value: 'user' },
+        { name: "developer", value: 'developer' },
       ],
       value: 0, // position of the tabview
       userName: '',
-      role: [],
+      password: null,
+      password1: null,
+  email:'',
+      role: '',
+      confirmPIN: true,
+      rolesStatus: true,
+      street: '',
+      country: '',
+      zip:'',
+      city:'',
+      phone: '',
       firstName: '',
       lastName: '',
-      image: null,
+     
       open: false,
+     
+      showPassword: false,
     };
   }
 
@@ -57,14 +77,21 @@ class AddUserModal extends Component {
     this.setState({
       open: true,
       value: 0, // position of the tabview
-      userName: '',
+    
       password: null,
       password1: null,
       pin: null,
-      role: [],
+      role: 'user',
       rolesStatus: true,
+    
+      street: '',
+      country: '',
+      zip:'',
+      city:'',
+      phone: '',
       firstName: '',
       lastName: '',
+  
     });
   };
 
@@ -74,17 +101,31 @@ class AddUserModal extends Component {
     });
   };
 
+
   handleChangeTab = (event, value) => {
     this.setState({ value });
   };
 
   handleChange = event => {
+    if(event.target.id === "password1"){
+      if(this.state.password === event.target.value ){
+        this.setState({
+          confirmpassword: true,
+          [event.target.id]: event.target.value,
+        })
+      }else {
+        this.setState({
+          confirmpassword: false,
+          [event.target.id]: event.target.value,
+        })
+      }
+    }
     this.setState({
       [event.target.id]: event.target.value,
     });
   };
 
-  handleMouseDownPassword = event => {
+   handleMouseDownPassword = event => {
     event.preventDefault();
   };
 
@@ -94,177 +135,271 @@ class AddUserModal extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-
+    const address ={
+      city:this.state.city,
+      country:this.state.country,
+      zip:this.state.zip,
+      street:this.state.street
+    }
     const data = {
-      userName: this.state.userName,
-      password: this.state.password,
-      lastName: this.state.lastName,
-      firstName: this.state.firstName,
-      role: this.state.role,
+              firstName:this.state.firstName,
+              lastName:this.state.lastName,
+              email:this.state.email,
+              password:this.state.password,
+              phone:this.state.phone,
+              roles: 'developer',
+              address: address
     };
-    await this.props.addUser(data, () => {}, () => {});
+    await this.props.addUser(
+      data,
+      () => {
+        this.props.toastManager.add('Create user with success', {
+          appearance: 'success',
+          autoDismiss: true,
+        });
+      },
+      () => {
+        this.props.toastManager.add('Create user failed', {
+          appearance: 'error',
+          autoDismiss: true,
+        });
+      }
+    );
     this.props.refresh();
     this.handleClose();
   };
 
   handleChangeSelect = event => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
+    this.setState({ [event.target.name]: event.target.value });
   };
+
+  handleChangeMultipleSelect = event => {
+    this.setState({ role: event.target.value });
+  };
+
+  
+  
+  verifyEmail=(value)=>{
+    var emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (emailRex.test(value)) {
+      return true;
+    }
+    return false;
+  }
+  verifyPassword=(value)=>{
+    const passwordRex = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[\d])(?=.*?[\W])/
+    const length = value.length
+    if(passwordRex.test(value) && length>6 && length<20){
+      return true
+    }
+    return false
+  }
+ 
+
+
+
 
   render() {
     const inputWidth = { width: '270px' };
-    return (
+    const inputWidth1 = { height: '60px' };
+    const { value } = this.state;
+ return (
       <Fragment>
         <Button variant="contained" color="primary" onClick={this.handleOpen}>
           <AddCircleTwoTone style={{ marginRight: 5, fontSize: 20 }} />
-          Add
+   Add
         </Button>
         <Modal open={this.state.open} onClose={this.handleClose}>
           <div className="mui-modal mui-modal-lg mui-modal-info">
             <div className="mui-modal-header">
               <Typography variant="h6" color="inherit">
-                Adding: <i>User</i>
+                Adding: user
               </Typography>
             </div>
+            <div className="mui-modal-header-tabs">
+              <Tabs className="tabs-style" value={value} onChange={this.handleChangeTab}>
+                <Tab label={'Information'} />
+                <Tab label={'Connection'} />
+              </Tabs>
+            </div>
             <div className="mui-modal-body">
-              <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                <div style={{ flexDirection: 'column', display: 'flex', marginRight: 70 }}>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="firstName"
-                      label="First name"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      value={this.state.firstName}
-                    />
+              {value === 0 && (
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <div style={{ flexDirection: 'column', display: 'flex', marginRight: 40 }}>
+                    
+                      <TextField
+                        style={inputWidth}
+                        id="firstName"
+                        label={'FirstName'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.firstName}
+                      />
+                   
+                      <TextField
+                        style={inputWidth}
+                        id="lastName"
+                        label={'LastName'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.lastName}
+                      />
+                
+                   
+                   <TextField
+                     style={inputWidth}
+                     id="email"
+                     label={'Email'}
+                     error={!this.verifyEmail(this.state.email)}
+                     onChange={this.handleChange}
+                     margin="normal"
+                     value={this.state.email}
+                   />
+               
+                 
+                      <TextField
+                        style={inputWidth}
+                        id="phone"
+                        type="number"
+                        label={"Phone"}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.phone}
+                      />
+                 </div>
+                   
+                  
+                  <div style={{ flexDirection: 'column', display: 'flex' }}>
+                    
+                      <TextField
+                        style={inputWidth}
+                        id="street"
+                        multiline
+                        rows="2"
+                        rowsMax="4"
+                        label={"Street"}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.steret}
+                      />
+                   
+                      <TextField
+                        style={inputWidth}
+                        id="country"
+                        label={'Country'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.country}
+                      />
+                   
+                   <TextField
+                        style={inputWidth}
+                        id="city"
+                        label={'City'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.city}
+                      />
+                   
+                   <TextField
+                        style={inputWidth}
+                        id="zip"
+                        type="number"
+                        label={'Zip'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.zip}
+                      />
+                   
                   </div>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="lastName"
-                      label="Last name"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      value={this.state.lastName}
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="userName"
-                      label="Username"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      required
-                      value={this.state.userName}
-                    />
-                  </div>
-                  <FormControl>
-                    <TextField
-                      style={inputWidth}
-                      id="password"
-                      label="Password"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      value={this.state.password}
-                      type="password"
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton onClick={this.handleClickShowPassword} onMouseDown={this.handleMouseDownPassword}>
-                            {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                  <FormControl>
-                    <TextField
-                      style={inputWidth}
-                      id="password1"
-                      label="Confirm password"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      type="password"
-                      value={this.state.password1}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton onClick={this.handleClickShowPassword} onMouseDown={this.handleMouseDownPassword}>
-                            {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                    {/* {!this.state.confirmpassword && ( */}
-                    {/* <FormHelperText */}
-                    {/* style={{ */}
-                    {/* display: 'flex', */}
-                    {/* flexDirection: 'row', */}
-                    {/* }} */}
-                    {/* error */}
-                    {/* > */}
-                    {/* <WarningTwoTone style={{ fontSize: 14 }} /> */}
-                    {/* <span style={{ paddingLeft: 5 }}> */}
-                    {/* The two passwords are not identical */}
-                    {/* </span> */}
-                    {/* </FormHelperText> */}
-                    {/* )} */}
-                  </FormControl>
+               
                 </div>
-                <div style={{ flexDirection: 'column', display: 'flex' }}>
-                  <FormControl style={inputWidth}>
-                    <InputLabel htmlFor="role">Roles</InputLabel>
-                    <Select
-                      value={this.state.role}
-                      onChange={this.handleChangeSelect}
-                      required
-                      inputProps={{
-                        name: 'role',
-                        id: 'role',
-                      }}
-                    >
-                      {this.state.rolesList.map(name => (
-                        <MenuItem value={name.value}>{name.value}</MenuItem>
-                      ))}
-                    </Select>
-                    {this.state.rolesStatus && (
-                      <FormHelperText
-                        style={{
-                          color: 'orange',
-                          display: 'flex',
-                          flexDirection: 'row',
-                        }}
-                        error
-                      >
-                        <WarningTwoTone style={{ fontSize: 14 }} />
-                        <span style={{ paddingLeft: 5 }}>Required fields</span>
-                      </FormHelperText>
-                    )}
-                  </FormControl>
+              )}
+              {value === 1 && (
+                <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                  <div style={{ flexDirection: 'column', display: 'flex', marginRight: 70 }}>
+                  
+                    <FormControl>
+                      <TextField
+                        style={inputWidth}
+                        id="password"
+                        label={'Password'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.password}
+                        type="password"
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={this.handleClickShowPassword}
+                              onMouseDown={this.handleMouseDownPassword}
+                            >
+                              {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <TextField
+                        style={inputWidth}
+                        id="password1"
+                        label={'confirm password'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        type="password"
+                        value={this.state.password1}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={this.handleClickShowPassword}
+                              onMouseDown={this.handleMouseDownPassword}
+                            >
+                              {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                      {!this.state.confirmpassword && (
+                        <FormHelperText
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                          }}
+                          error
+                        >
+                          <WarningTwoTone style={{ fontSize: 14 }} />
+                          <span style={{ paddingLeft: 5 }}>
+                              Password dont match
+                          </span>
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </div>
+                
                 </div>
-              </div>
+              )}
+             
             </div>
             <div className="mui-modal-footer">
               <Button variant="contained" onClick={this.handleClose}>
                 <Cancel style={{ marginRight: 5, fontSize: 20 }} />
-                Cancel
+                   Cancel
               </Button>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={this.handleSubmit}
                 disabled={
-                  !this.state.password ||
-                  this.state.password.length < 4 ||
-                  !this.state.userName ||
-                  !this.state.role ||
-                  this.state.role.length === 0
+                  !this.state.firstName ||
+                  !this.state.lastName ||
+                  !this.state.phone ||
+                  !this.state.confirmpassword ||
+                  !this.verifyEmail(this.state.email)
                 }
               >
                 <CheckCircle style={{ marginRight: 5, fontSize: 20 }} />
-                Add
+             Add
               </Button>
             </div>
           </div>
@@ -274,7 +409,10 @@ class AddUserModal extends Component {
   }
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = store => ({
+  token: store.auth.token,
+  refreshToken: store.auth.refreshToken
+});
 export default connect(
   mapStateToProps,
   { addUser }

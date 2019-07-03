@@ -1,105 +1,128 @@
-/* eslint-disable react/destructuring-assignment,no-unused-expressions */
+/* eslint-disable no-unused-expressions */
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import Modal from '@material-ui/core/Modal';
-import { CreateTwoTone, WarningTwoTone, VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons/';
 import CheckCircle from '@material-ui/icons/CheckCircleTwoTone';
 import Cancel from '@material-ui/icons/CancelTwoTone';
 import {
+  Avatar,
   Button,
-  IconButton,
-  InputAdornment,
-  MuiThemeProvider,
+  Checkbox,
   Select,
+  Tab,
+  Tabs,
   TextField,
   Typography,
+  InputAdornment,
+  IconButton,
 } from '@material-ui/core/';
 import { withToastManager } from 'react-toast-notifications/';
+import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { remoteAPI } from '../../../config';
+import ListItemText from '@material-ui/core/ListItemText';
+import {
+  CreateTwoTone,
+  ArrowLeftTwoTone,
+  ArrowRightTwoTone,
+  DateRangeTwoTone,
+  AccessTimeTwoTone,
+  DeleteTwoTone,
+  WarningTwoTone,
+  AddCircleTwoTone,
+  VisibilityTwoTone,
+  VisibilityOffTwoTone,
+} from '@material-ui/icons/';
 import { updateUser } from '../../../actions/users';
 
-class UpdateUserModal extends Component {
+type Props = {
+  refresh: () => *,
+  updateUser: () => *,
+  toastManager: any,
+};
+
+class UpdateUserModal extends Component<Props, *> {
   constructor(props) {
     super(props);
     this.state = {
-      rolesList: [
-        { name: 'superAdmin', value: 'superAdmin' },
-        { name: 'admin', value: 'admin' },
-        { name: 'analytic', value: 'analytic' },
-      ],
+    
       value: 0, // position of the tabview
-      userName: '',
-      role: [],
+     
+      password: null,
+      password1: null,
+  email:'',
+      role: '',
+      street: '',
+      country: '',
+      zip:'',
+      city:'',
+      phone: '',
       firstName: '',
       lastName: '',
-      image: null,
+     
       open: false,
-      password: null,
+     
+      showPassword: false,
     };
   }
 
-  componentDidMount() {
+  handleOpen = () => {
+
+    console.log(this.props.user)
     this.setState({
-      userName: this.props.user.userName,
-      role: this.props.user.role,
+      open: true,
+      value: 0, // position of the tabview
+    
+      
+      role: 'user',
+    
+    
+      street: this.props.user.local.address.street,
+      country: this.props.user.local.address.country,
+      zip:this.props.user.local.address.zip,
+      city:this.props.user.local.address.city,
+      phone: this.props.user.local.phone,
       firstName: this.props.user.firstName,
       lastName: this.props.user.lastName,
+      email:this.props.user.email
+  
     });
-  }
-
-  handleOpen = () => {
-    this.setState({ open: true });
   };
 
   handleClose = () => {
+    console.log(this.props.user)
     this.setState({
       open: false,
     });
   };
 
+
+  handleChangeTab = (event, value) => {
+    this.setState({ value });
+  };
+
   handleChange = event => {
+    if(event.target.id === "password1"){
+      if(this.state.password === event.target.value ){
+        this.setState({
+          confirmpassword: true,
+          [event.target.id]: event.target.value,
+        })
+      }else {
+        this.setState({
+          confirmpassword: false,
+          [event.target.id]: event.target.value,
+        })
+      }
+    }
     this.setState({
       [event.target.id]: event.target.value,
     });
   };
 
-  handleSubmit = async e => {
-    e.preventDefault();
-    let data = {};
-
-    if (this.state.password === null) {
-      data = {
-        userName: this.state.userName,
-        lastName: this.state.lastName,
-        firstName: this.state.firstName,
-        role: this.state.role,
-      };
-    } else {
-      data = {
-        userName: this.state.userName,
-        password: this.state.password,
-        lastName: this.state.lastName,
-        firstName: this.state.firstName,
-        role: this.state.role,
-      };
-    }
-
-    await this.props.updateUser(this.props.user._id, data, () => {}, () => {});
-    this.props.refresh();
-    this.handleClose();
-  };
-
-  handleChangeSelect = event => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  handleMouseDownPassword = event => {
+   handleMouseDownPassword = event => {
     event.preventDefault();
   };
 
@@ -107,154 +130,273 @@ class UpdateUserModal extends Component {
     this.setState(prevState => ({ showPassword: !prevState.showPassword }));
   };
 
+  handleSubmit = async e => {
+    e.preventDefault();
+    const address ={
+      city:this.state.city,
+      country:this.state.country,
+      zip:this.state.zip,
+      street:this.state.street
+    }
+    const data = {
+              firstName:this.state.firstName,
+              lastName:this.state.lastName,
+              email:this.state.email,
+              phone:this.state.phone,
+              roles: 'developer',
+              address: address
+    };
+    const password = (this.state.password !== '' && this.state.confirmpassword === true)?this.state.password : null
+    await this.props.updateUser(
+      this.props.user._id,
+      data,
+      password,
+      this.props.token, this.props.refreshToken,
+      () => {
+        this.props.toastManager.add('update user with success', {
+          appearance: 'success',
+          autoDismiss: true,
+        });
+      },
+      () => {
+        this.props.toastManager.add('Update user failed', {
+          appearance: 'error',
+          autoDismiss: true,
+        });
+      }
+    );
+    this.props.refresh();
+    this.handleClose();
+  };
+
+  handleChangeSelect = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  handleChangeMultipleSelect = event => {
+    this.setState({ role: event.target.value });
+  };
+
+  
+  
+  verifyEmail=(value)=>{
+    var emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (emailRex.test(value)) {
+      return true;
+    }
+    return false;
+  }
+  verifyPassword=(value)=>{
+    const passwordRex = /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[\d])(?=.*?[\W])/
+    const length = value.length
+    if(passwordRex.test(value) && length>6 && length<20){
+      return true
+    }
+    return false
+  }
+ 
+
+
+
+
   render() {
-    const inputWidth = { width: 270, };
-    return (
+    const inputWidth = { width: '270px' };
+    const inputWidth1 = { height: '60px' };
+    const { value } = this.state;
+ return (
       <Fragment>
-        <IconButton onClick={this.handleOpen}>
-          <CreateTwoTone />
+           <IconButton  onClick={this.handleOpen}>
+            <CreateTwoTone />
         </IconButton>
         <Modal open={this.state.open} onClose={this.handleClose}>
           <div className="mui-modal mui-modal-lg mui-modal-warning">
             <div className="mui-modal-header">
               <Typography variant="h6" color="inherit">
-                Editing: <i>User</i>
+                Update: user
               </Typography>
             </div>
-
+            <div className="mui-modal-header-tabs">
+              <Tabs className="tabs-style" value={value} onChange={this.handleChangeTab}>
+                <Tab label={'Information'} />
+                <Tab label={'Connection'} />
+              </Tabs>
+            </div>
             <div className="mui-modal-body">
-              <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
-                <div style={{ flexDirection: 'column', display: 'flex', marginRight: 70 }}>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="firstName"
-                      label="First name"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      value={this.state.firstName}
-                    />
+              {value === 0 && (
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                  <div style={{ flexDirection: 'column', display: 'flex', marginRight: 40 }}>
+                    
+                      <TextField
+                        style={inputWidth}
+                        id="firstName"
+                        label={'FirstName'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.firstName}
+                      />
+                   
+                      <TextField
+                        style={inputWidth}
+                        id="lastName"
+                        label={'LastName'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.lastName}
+                      />
+                
+                   
+                   <TextField
+                     style={inputWidth}
+                     id="email"
+                     label={'Email'}
+                     error={!this.verifyEmail(this.state.email)}
+                     onChange={this.handleChange}
+                     margin="normal"
+                     value={this.state.email}
+                   />
+               
+                 
+                      <TextField
+                        style={inputWidth}
+                        id="phone"
+                        type="number"
+                        label={"Phone"}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.phone}
+                      />
+                 </div>
+                   
+                  
+                  <div style={{ flexDirection: 'column', display: 'flex' }}>
+                    
+                      <TextField
+                        style={inputWidth}
+                        id="street"
+                        multiline
+                        rows="2"
+                        rowsMax="4"
+                        label={"Street"}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.street}
+                      />
+                   
+                      <TextField
+                        style={inputWidth}
+                        id="country"
+                        label={'Country'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.country}
+                      />
+                   
+                   <TextField
+                        style={inputWidth}
+                        id="city"
+                        label={'City'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.city}
+                      />
+                   
+                   <TextField
+                        style={inputWidth}
+                        id="zip"
+                        type="number"
+                        label={'Zip'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.zip}
+                      />
+                   
                   </div>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="lastName"
-                      label="Last name"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      value={this.state.lastName}
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="userName"
-                      label="Username"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      required
-                      value={this.state.userName}
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="password"
-                      label="Password"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      value={this.state.password}
-                      type="password"
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton onClick={this.handleClickShowPassword} onMouseDown={this.handleMouseDownPassword}>
-                            {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      style={inputWidth}
-                      id="password1"
-                      label="Confirm password"
-                      onChange={this.handleChange}
-                      margin="normal"
-                      type="password"
-                      value={this.state.confirmPassword}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton onClick={this.handleClickShowPassword} onMouseDown={this.handleMouseDownPassword}>
-                            {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </div>
-                  {/* {this.state.confirmpassword === false && ( */}
-                  {/* <FormHelperText */}
-                  {/* style={{ */}
-                  {/* display: 'flex', */}
-                  {/* flexDirection: 'row', */}
-                  {/* }} */}
-                  {/* error */}
-                  {/* > */}
-                  {/* <WarningTwoTone style={{ fontSize: 14 }} /> */}
-                  {/* <span style={{ paddingLeft: 5 }}> */}
-                  {/* Password dont match */}
-                  {/* </span> */}
-                  {/* </FormHelperText> */}
-                  {/* )} */}
+               
                 </div>
-                <div style={{ flexDirection: 'column', display: 'flex' }}>
-                  <FormControl>
-                    <InputLabel htmlFor="role">Roles</InputLabel>
-                    <Select
-                      value={this.state.role}
-                      onChange={this.handleChangeSelect}
-                      required
-                      inputProps={{
-                        name: 'role',
-                        id: 'role',
-                      }}
-                    >
-                      {this.state.rolesList.map(name => (
-                        <MenuItem value={name.value}>{name.value}</MenuItem>
-                      ))}
-                    </Select>
-                    {this.state.rolesStatus && (
-                      <FormHelperText
-                        style={{
-                          color: 'orange',
-                          display: 'flex',
-                          flexDirection: 'row',
-                        }}
-                        error
-                      >
-                        <WarningTwoTone style={{ fontSize: 14 }} />
-                        <span style={{ paddingLeft: 5 }}>Required</span>
-                      </FormHelperText>
-                    )}
-                  </FormControl>
+              )}
+              {value === 1 && (
+                <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+                  <div style={{ flexDirection: 'column', display: 'flex', marginRight: 70 }}>
+                  
+                    <FormControl>
+                      <TextField
+                        style={inputWidth}
+                        id="password"
+                        label={'Password'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        value={this.state.password}
+                        type="password"
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={this.handleClickShowPassword}
+                              onMouseDown={this.handleMouseDownPassword}
+                            >
+                              {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <TextField
+                        style={inputWidth}
+                        id="password1"
+                        label={'confirm password'}
+                        onChange={this.handleChange}
+                        margin="normal"
+                        type="password"
+                        value={this.state.password1}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={this.handleClickShowPassword}
+                              onMouseDown={this.handleMouseDownPassword}
+                            >
+                              {this.state.showPassword ? <VisibilityOffTwoTone /> : <VisibilityTwoTone />}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                      />
+                      {!this.state.confirmpassword && (
+                        <FormHelperText
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                          }}
+                          error
+                        >
+                          <WarningTwoTone style={{ fontSize: 14 }} />
+                          <span style={{ paddingLeft: 5 }}>
+                              Password dont match
+                          </span>
+                        </FormHelperText>
+                      )}
+                    </FormControl>
+                  </div>
+                
                 </div>
-              </div>
+              )}
+             
             </div>
             <div className="mui-modal-footer">
               <Button variant="contained" onClick={this.handleClose}>
                 <Cancel style={{ marginRight: 5, fontSize: 20 }} />
-                Cancel
+                   Cancel
               </Button>
-              <MuiThemeProvider>
-                <Button
-                  variant="contained"
-                  onClick={this.handleSubmit}
-                  disabled={!this.state.userName || !this.state.role || this.state.role.length === 0}
-                >
-                  <CheckCircle style={{ marginRight: 5, fontSize: 20 }} />
-                  Update
-                </Button>
-              </MuiThemeProvider>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.handleSubmit}
+                disabled={
+                  
+                  !this.verifyEmail(this.state.email)
+                }
+              >
+                <CheckCircle style={{ marginRight: 5, fontSize: 20 }} />
+             Update
+              </Button>
             </div>
           </div>
         </Modal>
@@ -263,7 +405,11 @@ class UpdateUserModal extends Component {
   }
 }
 
-const mapStateToProps = () => ({});
+const mapStateToProps = store => ({
+
+  token: store.auth.token,
+  refreshToken: store.auth.refreshToken
+});
 export default connect(
   mapStateToProps,
   { updateUser }

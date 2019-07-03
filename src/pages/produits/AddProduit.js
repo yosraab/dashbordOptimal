@@ -59,16 +59,16 @@ class AddProduit extends Component {
 
     await this.props.createProduct(data,
       () => {
-    /*    this.props.toastManager.add('create Product with success', {
+        this.props.toastManager.add('create Product with success', {
           appearance: 'success',
           autoDismiss: true,
-        });*/
+        });
       },
       () => {
-       /* this.props.toastManager.add('create Product failed', {
+        this.props.toastManager.add('create Product failed', {
           appearance: 'error',
           autoDismiss: true,
-        });*/
+        })
       });
     this.handleClose();
     this.props.refresh();

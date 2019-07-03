@@ -1,22 +1,6 @@
 import { combineReducers } from 'redux';
-const initalState=[
-  {
-    'id':0,
-    "firstName": "zara",
-    "lastName": "zara",
-    "email": "zara@gmail.com",
-    "companyName": 'MATADOR'
-  },
-  {
-    'id':1,
-    "firstName": "zarouk",
-    "lastName": "zarouk",
-    "email": "zarouk@gmail.com",
-    "companyName": 'Zarouk café'
-  },
- 
-]
-function customers(state = initalState, action) {
+
+function customers(state = [], action) {
   switch (action.type) {
     case 'FETCH_CUSTOMERS_SUCCESS': {
       return action.payload;

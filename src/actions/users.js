@@ -31,22 +31,34 @@ const fetch = createApolloFetch({
 });
 
 
-export const fetchAllUsers = (token, refreshToken) => dispatch => {
+export const fetchAllUsers = (token, refreshToken) =>async  dispatch => {
+
   dispatch({ type: FETCH_USERS_REQUEST });
-  return  axios('http://localhost:5000/graphql', {
+  return await axios('http://localhost:5000/graphql', {
         method: 'POST',
         headers: {
-        'Content-Type': 'application/json',
-        'x-token': token,
-        'x-refresh-token': refreshToken
+        "Content-Type": 'application/json',
+        "Access-Control-Allow-Headers": '*',
+        "x-token": token,
+        "x-refresh-token": refreshToken
       },
         data: JSON.stringify({
           query: ` query {
-            getAllUsers{
+            getAllDevelopers{
               _id
               firstName
               lastName
               email
+              local{
+                roles
+                phone
+                address{
+                  city
+                  country
+                  zip
+                  street
+                }
+              }
             }
       
           }
@@ -58,7 +70,7 @@ export const fetchAllUsers = (token, refreshToken) => dispatch => {
   .then(response => {
 
     console.log(response)
-    dispatch({ type: FETCH_USERS_SUCCESS, payload: response.data.getAllUsers });
+    dispatch({ type: FETCH_USERS_SUCCESS, payload: response.data.data.getAllDevelopers });
 
   })
     .catch(error => {
@@ -71,22 +83,57 @@ export const addUser = (data, callback1, callback2) => async (dispatch, getState
     auth: { token },
   } = getState();
   return axios({
-    url: `${remoteAPI}/user`,
+    url: `${remoteAPI}`,
     method: 'post',
     headers: {
-      Authorization: token,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    data,
+    data: JSON.stringify({
+          query: `
+            mutation CreateUser($userInput:UserInput!){
+              createUser(data:$userInput)
+              {
+                collection{
+                  _id
+                  email
+                  firstName
+                  lastName
+                  idThirdParty 
+                  local {
+                         phone
+                   password
+                   roles
+                   address{
+                     street
+                city
+                zip
+                country
+              }
+                  }
+                   deleted
+                  _updatedBy
+                  _deletedBy
+                  createdAt
+                  updatedAt
+                  
+                  }
+                  token
+                  refreshToken
+              }
+              
+            }
+            `,
+          variables: {
+            userInput: data
+          },
+        })
+  
   })
-    .then(response => {
-      if (response.status === 201) {
+ .then(response => {
+     
         dispatch({ type: ADD_USER_SUCCESS, payload: response });
         callback1();
-      } else {
-        dispatch({ type: ADD_USER_FAILURE, payload: response });
-        callback2();
-      }
+    
     })
     .catch(error => {
       dispatch({ type: ADD_USER_FAILURE, payload: error });
@@ -94,28 +141,104 @@ export const addUser = (data, callback1, callback2) => async (dispatch, getState
     });
 };
 
-export const updateUser = (userId, data, callback1, callback2) => async (dispatch, getState) => {
+export const updateUser = (id, data,password,token, refreshToken, callback1, callback2) => async (dispatch, getState) => {
   const {
     auth: { token },
   } = getState();
 
   return axios({
-    url: `${remoteAPI}/user/${userId}`,
-    method: 'put',
+    url: `${remoteAPI}`,
+    method: 'post',
     headers: {
-      Authorization: token,
       'Content-Type': 'application/json',
+      
+      "Access-Control-Allow-Headers": '*',
+      "x-token": token,
+      "x-refresh-token": refreshToken
     },
-    data,
+    data: JSON.stringify({
+          query: `
+            mutation UpdateBy($id : ID!, $userInput:UserInput!){
+              updateBy(id: $id, data:$userInput)
+              
+              {
+                _id
+                email
+                firstName
+                lastName
+                idThirdParty 
+                local {
+                  phone
+             password
+             roles
+             address{
+              street
+              city
+              zip
+              country
+             }
+            }
+              }
+              
+            }
+            `,
+          variables: {
+            id: id,
+            userInput: data
+          },
+        })
+  
   })
     .then(response => {
-      if (response.status === 200) {
+      if(password ){
+        axios({
+          url: `${remoteAPI}`,
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: JSON.stringify({
+                query: `
+                  mutation UpdatePasswordBy($id : ID!, $newPassword:String!){
+                    updatePasswordBy(id: $id, newPassword:$newPassword)
+                    {
+                      
+                      _id
+                      email
+                      firstName
+                      lastName
+                      idThirdParty 
+                      local {
+                        phone
+                   password
+                   roles
+                   address{
+                    street
+                    city
+                    zip
+                    country
+                  }
+                      }
+                       deleted
+                      _updatedBy
+                      _deletedBy
+                      createdAt
+                      updatedAt  
+                    }
+                    
+                  }
+                  `,
+                variables: {
+                  id:id,
+                  newPassword: password
+                },
+              })
+        
+        })
+      }
         dispatch({ type: EDIT_USER_SUCCESS, payload: response.data });
         callback1();
-      } else {
-        dispatch({ type: EDIT_USER_FAILURE, payload: 'error' });
-        callback2();
-      }
+     
     })
     .catch(error => {
       dispatch({ type: EDIT_USER_FAILURE, payload: error });
@@ -123,17 +246,56 @@ export const updateUser = (userId, data, callback1, callback2) => async (dispatc
     });
 };
 
-export const deleteUser = id => async (dispatch, getState) => {
+export const deleteUser = (id, token, refreshToken )=> async (dispatch, getState) => {
   dispatch({ type: DELETE_USER_REQUEST });
   const {
     auth: { token },
   } = getState();
-  return fetch(`${remoteAPI}/user/${id}`, {
-    method: 'delete',
+  return axios({
+    url: `${remoteAPI}`,
+    method: 'post',
     headers: {
-      'content-type': 'application/json',
-      Authorization: token,
+      'Content-Type': 'application/json',
+      "Access-Control-Allow-Headers": '*',
+      "x-token": token,
+      "x-refresh-token": refreshToken
     },
+    data : JSON.stringify({
+      query: `
+      mutation DeleteUser ($id:ID!) {
+      
+        deleteUser(id:$id) {
+          _id
+          email
+          firstName
+          lastName
+          idThirdParty 
+          local {
+            phone
+           password
+           roles
+              address{
+                street
+                city
+                zip
+                country
+              }
+          }
+           deleted
+          _updatedBy
+          _deletedBy
+          createdAt
+          updatedAt  
+        }
+      
+      }
+      
+
+    ` , variables :{
+      id: id
+    }
+    })
+  
   })
     .then(() =>
       dispatch({
@@ -151,22 +313,3 @@ export const deleteUser = id => async (dispatch, getState) => {
     );
 };
 
-export function getUser(userId, token) {
-  return dispatch => {
-    axios
-      .get(`${remoteAPI}/user/${userId}`, {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then(response => {
-        if (response.status === 200) {
-          return dispatch({ type: 'GET_USER_SUCCESS' });
-        }
-        return response.status;
-      })
-      .catch(() => {
-        dispatch({ type: 'GET_USER_FAILURE' });
-      });
-  };
-}

@@ -157,46 +157,90 @@ export const createProduct = (data, callback, callbackFailure) => (dispatch, get
     })
 };
 
-export const deleteApplication = appId => async (dispatch, getState) => {
+export const deleteProduct = productId => async (dispatch, getState) => {
   const {
     auth: { token },
   } = getState();
 
-  return axios
-    .delete(`${remoteAPI}/application/${appId}`, {
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(response => {
-      if (response.status === 204) {
-        dispatch({ type: 'DELETE_APPLICATION_SUCCESS', payload: response.data });
+  return axios({
+    url: `${remoteAPI}`,
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data : JSON.stringify({
+      query: `
+      mutation deleteProductById ($id:ID!) {
+      
+          deleteProductById(id:$id)
+   
       }
+      
+
+    ` , variables :{
+      id: productId
+    }
+    })
+  
+  })
+    .then(response => {
+     
+        dispatch({ type: 'DELETE_PRODUCT_SUCCESS', payload: response.data });
+     
     })
     .catch(error => {
-      dispatch({ type: 'DELETE_APPLICATION_FAILURE', payload: error });
+      dispatch({ type: 'DELETE_PRODUCT_FAILURE', payload: error });
     });
 };
 
-export const updateProduct = (productId, data) => async (dispatch, getState) => {
+export const updateProduct = (productId, data, callback, callback2) => async (dispatch, getState) => {
   const {
     auth: { token },
   } = getState();
 
-  return axios
-    .put(`${remoteAPI}`, data, {
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(response => {
-      if (response.status === 200) {
-        dispatch({ type: 'UPDATE_APPLICATION_SUCCESS', payload: response.data });
+  return axios({
+    url: `${remoteAPI}`,
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data : JSON.stringify({
+      query: `
+      mutation UpdateProduct($id: ID!, $data:ProductInput!) {
+        updateProduct(id: $id, data:$data ) {
+         _id
+          name
+        description
+        categoryName
+        categoryFamily
+        manufacturer{
+          nameMan
+        logoMan
+        }
+        feature{
+          color
+          itemCondition
+          logo
+          stock
+          audience
+          brand
+        }
+        }
       }
+
+    ` ,variables: {
+      id:productId,
+      data: data
+    }
+    })
+  
+  })
+    .then(response => {
+        dispatch({ type: 'UPDATE_PRODUCT_SUCCESS', payload: response.data });
+        callback()
     })
     .catch(() => {
-      dispatch({ type: 'UPDATE_APPLICATION_FAILURE' });
+      dispatch({ type: 'UPDATE_PRODUCT_FAILURE' });
+      callback2()
     });
 };

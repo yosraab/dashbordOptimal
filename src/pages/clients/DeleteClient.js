@@ -15,7 +15,7 @@ class DeleteClient extends Component {
     }
 
     handleDelete = async () => {
-        await this.props.deleteClient(this.props.client);
+        await this.props.deleteClient(this.props.client._id, this.props.token , this.props.refreshToken);
         this.handleClose();
         this.props.refresh();
     };
@@ -39,7 +39,7 @@ class DeleteClient extends Component {
                     <DialogContent>
                         <DialogContentText>
                             Are you sure you want to delete ?{': '}
-                            <strong>{`${this.props.client.name}`}</strong>?
+                            <strong>{`${this.props.client.firstName}`}</strong>?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
@@ -56,10 +56,13 @@ class DeleteClient extends Component {
     }
 }
 
-const mapStateToProps = store => ({
-    token: store.auth.token,
-});
 
+const mapStateToProps = store => ({
+
+    token: store.auth.token,
+    refreshToken: store.auth.refreshToken
+  });
+  
 export default connect(
     mapStateToProps,
     { deleteClient }

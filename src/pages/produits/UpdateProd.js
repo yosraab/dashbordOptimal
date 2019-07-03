@@ -25,7 +25,8 @@ class UpdateProd extends Component {
       itemCondition:'',
       audience:'',
       logoManu: '',
-      nameMan:''
+      nameMan:'',
+      id:''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -48,8 +49,8 @@ class UpdateProd extends Component {
 
     const data = {
       name: this.state.name,
-      categoryName:this.props.categName,
-      categoryFamily:this.props.familyName,
+      categoryName:this.props.product.categoryName ,
+      categoryFamily:this.props.product.categoryFamily ,
       description:this.state.description,
 
       image: this.state.listImages,
@@ -57,18 +58,18 @@ class UpdateProd extends Component {
       manufacturer:manufacturer,
     };
 
-    await this.props.updateProduct(data,
+    await this.props.updateProduct(this.props.product._id,data,
       () => {
-    /*    this.props.toastManager.add('create Product with success', {
+      this.props.toastManager.add('update Product with success', {
           appearance: 'success',
           autoDismiss: true,
-        });*/
+        });
       },
       () => {
-       /* this.props.toastManager.add('create Product failed', {
+       this.props.toastManager.add('update Product failed', {
           appearance: 'error',
           autoDismiss: true,
-        });*/
+        });
       });
     this.handleClose();
     this.props.refresh();
@@ -107,7 +108,8 @@ class UpdateProd extends Component {
       itemCondition: this.props.product.feature.itemCondition,
       audience: this.props.product.feature.audience,
       logoManu:  this.props.product.manufacturer.logoMan,
-      nameMan: this.props.product.manufacturer.nameMan
+      nameMan: this.props.product.manufacturer.nameMan,
+      id :this.props.product._id
   
     
     });
@@ -185,8 +187,7 @@ class UpdateProd extends Component {
     const inputFile={
       display: 'none',
     }
-    
-    console.log(this.props)
+  
     return (
       <div>
         <IconButton  onClick={this.handleOpen}>

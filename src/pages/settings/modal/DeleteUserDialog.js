@@ -5,7 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import Button from '@material-ui/core/Button/';
 import Delete from '@material-ui/icons/DeleteTwoTone';
 import IconButton from '@material-ui/core/IconButton';
-import { deleteUser, fetchAllUsers } from '../../../actions/users';
+import { deleteUser } from '../../../actions/users';
 
 class DeleteUserDialog extends Component {
   constructor(props) {
@@ -15,8 +15,8 @@ class DeleteUserDialog extends Component {
     };
   }
 
-  handleCloseDeleteModalWithOk = () => {
-    this.props.deleteUser(this.props.user._id, this.props.token);
+  handleCloseDeleteModalWithOk = async () => {
+   await this.props.deleteUser(this.props.user._id, this.props.token, this.props.refreshToken);
     this.setState({ openDeleteDialog: false });
     this.props.refresh();
   };
@@ -61,11 +61,14 @@ class DeleteUserDialog extends Component {
   }
 }
 
+
 const mapStateToProps = store => ({
+
   token: store.auth.token,
+  refreshToken: store.auth.refreshToken
 });
 
 export default connect(
   mapStateToProps,
-  { deleteUser, fetchAllUsers }
+  { deleteUser }
 )(DeleteUserDialog);
