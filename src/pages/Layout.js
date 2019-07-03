@@ -94,11 +94,14 @@ class Layout extends Component {
                 justifyContent: 'space-between',
               }}
             >
-              <Link to="/settings">
-                <IconButton>
-                  <SettingsTwoTone style={{ color: '#fff' }} />
-                </IconButton>
-              </Link>
+              {this.props.user &&  this.props.user.local && this.props.user.local.roles === "super user" &&(
+                  <Link to="/settings">
+                    <IconButton>
+                      <SettingsTwoTone style={{ color: '#fff' }} />
+                    </IconButton>
+                  </Link>
+              )}
+             
               <IconButton onClick={() => this.props.logout(this.props.token, () => {})}>
                 <ExitToAppTwoTone style={{ color: '#fff' }} />
               </IconButton>
@@ -132,7 +135,8 @@ class Layout extends Component {
                 </p>
               </div>
             </Link>
-            
+   {this.props.user &&  this.props.user.local && this.props.user.local.roles === "super user" &&(
+    <Fragment>
             <Divider />
             <Link to="/family" onClick={this.toggleDrawer('left', false)}>
               <ListItem>
@@ -151,6 +155,8 @@ class Layout extends Component {
                 Customers
               </ListItem>
             </Link>
+            </Fragment>
+   )}
             <Divider />
             <Link to="/candidatures" onClick={this.toggleDrawer('left', false)}>
               <ListItem>

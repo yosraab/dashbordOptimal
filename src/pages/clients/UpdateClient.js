@@ -78,11 +78,11 @@ class UpdateClient extends Component<Props, *> {
       role: 'user',
     
     
-      street: this.props.client.local.address.street,
-      country: this.props.client.local.address.country,
-      zip:this.props.client.local.address.zip,
-      city:this.props.client.local.address.city,
-      phone: this.props.client.local.phone,
+      street: this.props.client.local.address.street?this.props.client.local.address.street:'',
+      country: this.props.client.local.address.country? this.props.client.local.address.country:'',
+      zip:this.props.client.local.address.zip? this.props.client.local.address.zip: '',
+      city:this.props.client.local.address.city?this.props.client.local.address.city :'',
+      phone: this.props.client.local.phone?this.props.client.local.phone : '',
       firstName: this.props.client.firstName,
       lastName: this.props.client.lastName,
       email:this.props.client.email

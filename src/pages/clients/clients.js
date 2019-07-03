@@ -13,7 +13,6 @@ const columnData = [
   { id: 'name', label: 'First name' },
   { id: 'familyName', label: 'Last name' },
   { id: 'email', label: 'Email' },
-  { id: 'companyName', label: 'Company name' },
   { id: 'actions', label: 'Actions' },
 ];
 
@@ -76,7 +75,7 @@ class Clients extends Component {
                       <TableCell>{client.firstName}</TableCell>
                       <TableCell>{client.lastName}</TableCell>
                       <TableCell>{client.email}</TableCell>
-                      <TableCell>{client.companyName}</TableCell>
+                     
                      <TableCell>
                         <div style={{ display: 'flex', flexDirection: 'row', placeContent: 'flex-end' }}>
                           <UpdateClient client={client} refresh={this.refreshData} />

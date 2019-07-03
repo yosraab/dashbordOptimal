@@ -78,12 +78,13 @@ class UpdateUserModal extends Component<Props, *> {
       
       role: 'user',
     
+      street: this.props.user.local.address.street?this.props.user.local.address.street:'',
+      country: this.props.user.local.address.country? this.props.user.local.address.country:'',
+      zip:this.props.user.local.address.zip? this.props.user.local.address.zip: '',
+      city:this.props.user.local.address.city?this.props.user.local.address.city :'',
+      phone: this.props.user.local.phone?this.props.user.local.phone : '',
     
-      street: this.props.user.local.address.street,
-      country: this.props.user.local.address.country,
-      zip:this.props.user.local.address.zip,
-      city:this.props.user.local.address.city,
-      phone: this.props.user.local.phone,
+
       firstName: this.props.user.firstName,
       lastName: this.props.user.lastName,
       email:this.props.user.email

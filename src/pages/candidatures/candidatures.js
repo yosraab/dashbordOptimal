@@ -10,7 +10,6 @@ import EnhancedTableHead from '../../components/Commun/EnhancedTableHead';
 import { fetchCandidatures } from '../../actions/candidatures';
 import { fetchProduits } from '../../actions/produits';
 import UpdateCandidature from './UpdateCandidature';
-import DeleteCandidature from './DeleteCandidature';
 
 const columnData = [
  
@@ -71,7 +70,7 @@ class Candidatures extends Component {
               Candidatures
             </Typography>
             <Typography variant="caption" style={{ paddingLeft: 20 }}>
-              Here, you can add, edit, delete and manage your products candidatures.
+              Here, you can add, edit, delete and manage your  candidatures.
             </Typography>
           </div>
 
@@ -89,10 +88,10 @@ class Candidatures extends Component {
                       <TableCell>{candidature.email}</TableCell>
   
                       <TableCell>
-                        { data.length === index ? (
-                          <span style={{ color: 'green' }}>Seen</span>
+                        { candidature.status === 'approved' ? (
+                          <span style={{ color: 'green' }}>approved</span>
                         ) : (
-                          <span style={{ color: 'orange' }}>Waiting</span>
+                          <span style={{ color: 'orange' }}>Wait</span>
                         )}
                       </TableCell>
                     
@@ -101,8 +100,7 @@ class Candidatures extends Component {
                         <IconButton onClick={()=>{ window.open(candidature.cvPath)}}>
                             <Visibility />
                           </IconButton>
-                          <UpdateCandidature copy={candidature} refresh={this.refreshData} />
-                          <DeleteCandidature copy={candidature} refresh={this.refreshData} />
+                          <UpdateCandidature candidature={candidature} refresh={this.refreshData} />
                         </div>
                       </TableCell>
                     </TableRow>

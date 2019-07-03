@@ -24,7 +24,9 @@ export function signIn(email, pwd, callback1, callback2) {
                   firstName
                   lastName
                   idThirdParty
-                
+                local {
+                  roles
+                }
                   deleted
                   _updatedBy
                   createdAt
